@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        required: false
+        description: 'Release'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: production
+    name: Release
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+      - name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: main
+          changelog_increment_filename: changelog.md
+      - name: Release version
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: "changelog.md"
+          tag_name: v${{ env.REVISION }}
