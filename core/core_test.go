@@ -1,10 +1,11 @@
 package core
 
 import (
-	"github.com/eachinchung/errors"
-	"github.com/gin-gonic/gin"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/eachinchung/errors"
+	"github.com/gin-gonic/gin"
 )
 
 func TestWriteResponse(t *testing.T) {
@@ -37,7 +38,7 @@ func TestWriteResponse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			WriteResponse(tt.args.c, tt.args.err, tt.args.detail)
+			WriteResponse(tt.args.c, tt.args.detail, WithError(tt.args.err))
 		})
 	}
 }
