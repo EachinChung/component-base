@@ -67,3 +67,34 @@ func TestPhone(t *testing.T) {
 		})
 	}
 }
+
+func TestEmail(t *testing.T) {
+	type args struct {
+		email string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "test_email",
+			args: args{
+				email: "test@a.com",
+			},
+			want: true,
+		},
+		{
+			name: "test_email_invalid",
+			args: args{
+				email: "test@a",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, Email(tt.args.email), "Email(%v)", tt.args.email)
+		})
+	}
+}

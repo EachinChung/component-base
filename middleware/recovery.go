@@ -14,7 +14,6 @@ import (
 
 	"github.com/eachinchung/log"
 	"github.com/gin-gonic/gin"
-	//"github.com/EachinChung/service/internal/pkg/code"
 )
 
 var (
