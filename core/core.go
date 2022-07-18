@@ -6,7 +6,27 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/errors"
+	"github.com/eachinchung/log"
 )
+
+type response struct {
+	httpStatus int
+	err        error
+}
+
+type Option func(*response)
+
+func WithHttpStatus(httpStatus int) Option {
+	return func(r *response) {
+		r.httpStatus = httpStatus
+	}
+}
+
+func WithError(err error) Option {
+	return func(r *response) {
+		r.err = err
+	}
+}
 
 // ErrResponse 定义发生错误时的返回消息。
 type ErrResponse struct {
@@ -24,9 +44,20 @@ type ErrResponse struct {
 // WriteResponse 将错误或响应数据写入http响应主体。
 // 它使用 errors.ParseCoder 将任何错误解析为 errors.Coder
 // errors.Coder 包含错误代码、用户安全错误消息和 http 状态代码。
-func WriteResponse(c *gin.Context, err error, detail interface{}) {
-	if err != nil {
-		coder := errors.ParseCoder(err)
+func WriteResponse(c *gin.Context, detail interface{}, opts ...Option) {
+	r := &response{
+		httpStatus: http.StatusOK,
+	}
+
+	for _, opt := range opts {
+		opt(r)
+	}
+
+	if r.err != nil {
+		coder := errors.ParseCoder(r.err)
+		if coder.Code() == 1 {
+			log.Errorf("检测到未知错误, err: %+v", r.err)
+		}
 		c.JSON(coder.HTTPStatus(), ErrResponse{
 			ErrCode: coder.Code(),
 			Message: coder.String(),
@@ -35,5 +66,5 @@ func WriteResponse(c *gin.Context, err error, detail interface{}) {
 		return
 	}
 
-	c.JSON(http.StatusOK, detail)
+	c.JSON(r.httpStatus, detail)
 }
