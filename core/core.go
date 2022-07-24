@@ -11,7 +11,9 @@ import (
 
 type response struct {
 	httpStatus int
+	message    *string
 	err        error
+	abort      bool
 }
 
 type Option func(*response)
@@ -25,6 +27,18 @@ func WithHttpStatus(httpStatus int) Option {
 func WithError(err error) Option {
 	return func(r *response) {
 		r.err = err
+	}
+}
+
+func WithAbort() Option {
+	return func(r *response) {
+		r.abort = true
+	}
+}
+
+func WithMessage(message string) Option {
+	return func(r *response) {
+		r.message = &message
 	}
 }
 
@@ -47,10 +61,15 @@ type ErrResponse struct {
 func WriteResponse(c *gin.Context, detail interface{}, opts ...Option) {
 	r := &response{
 		httpStatus: http.StatusOK,
+		abort:      false,
 	}
 
 	for _, opt := range opts {
 		opt(r)
+	}
+
+	if r.abort {
+		c.Abort()
 	}
 
 	if r.err != nil {
@@ -58,11 +77,18 @@ func WriteResponse(c *gin.Context, detail interface{}, opts ...Option) {
 		if coder.Code() == 1 {
 			log.Errorf("检测到未知错误, err: %+v", r.err)
 		}
-		c.JSON(coder.HTTPStatus(), ErrResponse{
+
+		rsp := ErrResponse{
 			ErrCode: coder.Code(),
 			Message: coder.String(),
 			Detail:  detail,
-		})
+		}
+
+		if r.message != nil {
+			rsp.Message = *r.message
+		}
+
+		c.JSON(coder.HTTPStatus(), rsp)
 		return
 	}
 
