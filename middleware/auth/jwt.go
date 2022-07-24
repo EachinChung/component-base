@@ -61,7 +61,7 @@ type GinJWTMiddleware struct {
 	// User can define own RefreshResponse func.
 	RefreshResponse func(c *gin.Context, code int, message string, time time.Time)
 
-	// TokenLookup is a string in the form of "<source>:<name>" that is used
+	// TokenLookup is a stringutil in the form of "<source>:<name>" that is used
 	// to extract token from the request.
 	// Optional. Default value "header:Authorization".
 	// Possible values:
@@ -70,7 +70,7 @@ type GinJWTMiddleware struct {
 	// - "cookie:<name>"
 	TokenLookup string
 
-	// TokenHeadName is a string in the header. Default value is "Bearer"
+	// TokenHeadName is a stringutil in the header. Default value is "Bearer"
 	TokenHeadName string
 
 	// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
@@ -194,7 +194,7 @@ func (mw *GinJWTMiddleware) GetClaimsFromJWT(c *gin.Context) (MapClaims, error) 
 
 	sub, ok := claims["sub"]
 	if ok {
-		c.Set(log.KeyUsername, sub)
+		c.Set(log.KeyEID, sub)
 	}
 
 	return claims, nil
@@ -267,7 +267,7 @@ func (mw *GinJWTMiddleware) ParseToken(c *gin.Context) (*jwt.Token, error) {
 			return nil, ErrInvalidSigningAlgorithm
 		}
 
-		// save token string if valid
+		// save token stringutil if valid
 		c.Set("JWT_TOKEN", token)
 
 		return mw.Key, nil

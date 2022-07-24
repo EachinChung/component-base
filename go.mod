@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/eachinchung/errors v1.5.0
-	github.com/eachinchung/log v1.2.1
+	github.com/eachinchung/log v1.3.0
 	github.com/fatih/color v1.13.0
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
@@ -14,6 +14,7 @@ require (
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
 	github.com/satori/go.uuid v1.2.0
 	github.com/sony/sonyflake v1.0.0
+	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.12.0
