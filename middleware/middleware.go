@@ -34,20 +34,6 @@ func NoCache(c *gin.Context) {
 	c.Header("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 }
 
-// Options 是一个中间件函数，它为 OPTIONS 请求附加响应头并结束请求。
-func Options(c *gin.Context) {
-	if c.Request.Method != "OPTIONS" {
-		c.Next()
-	} else {
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "authorization, origin, content-type, accept")
-		c.Header("Allow", "HEAD,GET,POST,PUT,PATCH,DELETE,OPTIONS")
-		c.Header("Content-Type", "application/json")
-		c.AbortWithStatus(http.StatusOK)
-	}
-}
-
 // Secure 是一个中间件函数，它附加了安全和资源的响应头。
 func Secure(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
@@ -65,7 +51,6 @@ func Secure(c *gin.Context) {
 var Store = map[string]gin.HandlerFunc{
 	"Recovery":        Recovery(),
 	"Secure":          Secure,
-	"Options":         Options,
 	"NoCache":         NoCache,
 	"Cors":            Cors(),
 	"Logger":          Logger(),
