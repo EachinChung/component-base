@@ -1,17 +1,17 @@
-package db
+package postgres
 
 import (
 	"fmt"
-	"time"
-
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"time"
 )
 
 // Options 定义 mysql 数据库的选项。
 type Options struct {
 	Host                  string
+	Port                  int
 	Username              string
 	Password              string
 	Database              string
@@ -25,16 +25,15 @@ type Options struct {
 // New 使用给定的选项创建一个新的 gorm.DB 实例。
 func New(opts *Options) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
-		`%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=%t&loc=%s`,
+		`host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Shanghai`,
+		opts.Host,
 		opts.Username,
 		opts.Password,
-		opts.Host,
 		opts.Database,
-		true,
-		"Local",
+		opts.Port,
 	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: opts.Logger,
 	})
 	if err != nil {

@@ -8,12 +8,13 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/eachinchung/component-base/db/logger"
-	"github.com/eachinchung/component-base/db/mysql"
+	"github.com/eachinchung/component-base/db/postgres"
 )
 
-// MySQLOptions 为mysql数据库定义选项
-type MySQLOptions struct {
+// PostgresOptions 为Postgres数据库定义选项
+type PostgresOptions struct {
 	Host                  string        `json:"host,omitempty"                     mapstructure:"host"`
+	Port                  int           `json:"port"                               mapstructure:"port"`
 	Username              string        `json:"username,omitempty"                 mapstructure:"username"`
 	Password              string        `json:"-"                                  mapstructure:"password"`
 	Database              string        `json:"database"                           mapstructure:"database"`
@@ -24,13 +25,14 @@ type MySQLOptions struct {
 	LogEnableColor        bool          `json:"log-enable-color"                   mapstructure:"log-enable-color"`
 }
 
-// NewMySQLOptions 创建一个带有默认参数的 MySQLOptions 对象。
-func NewMySQLOptions() *MySQLOptions {
-	return &MySQLOptions{
-		Host:                  "127.0.0.1:3306",
-		Username:              "",
-		Password:              "",
-		Database:              "",
+// NewPostgresOptions 创建一个带有默认参数的 PostgresOptions 对象。
+func NewPostgresOptions() *PostgresOptions {
+	return &PostgresOptions{
+		Host:                  "127.0.0.1",
+		Port:                  5432,
+		Username:              "postgres",
+		Password:              "123456",
+		Database:              "postgres",
 		MaxIdleConnections:    100,
 		MaxOpenConnections:    100,
 		MaxConnectionLifeTime: time.Minute,
@@ -39,54 +41,57 @@ func NewMySQLOptions() *MySQLOptions {
 }
 
 // Validate 验证选项字段。
-func (o *MySQLOptions) Validate() []error {
+func (o *PostgresOptions) Validate() []error {
 	return []error{}
 }
 
-// AddFlags 将 mysql 的各个字段追加到传入的 pflag.FlagSet 变量中。
-func (o *MySQLOptions) AddFlags(fs *pflag.FlagSet) {
-	fs.StringVar(&o.Host, "mysql.host", o.Host, "MySQL服务主机地址。如果留空，以下相关的mysql选项将被忽略")
+// AddFlags 将 Postgres 的各个字段追加到传入的 pflag.FlagSet 变量中。
+func (o *PostgresOptions) AddFlags(fs *pflag.FlagSet) {
+	fs.StringVar(&o.Host, "Postgres.host", o.Host, "Postgres服务主机地址。如果留空，以下相关的Postgres选项将被忽略")
 
-	fs.StringVar(&o.Username, "mysql.username", o.Username, "访问mysql服务的用户名")
+	fs.IntVar(&o.Port, "Postgres.port", o.Port, "Postgres服务端口")
 
-	fs.StringVar(&o.Password, "mysql.password", o.Password, "用于访问mysql的密码，应与密码配对使用")
+	fs.StringVar(&o.Username, "Postgres.username", o.Username, "访问Postgres服务的用户名")
 
-	fs.StringVar(&o.Database, "mysql.database", o.Database, "服务器要使用的数据库名称")
+	fs.StringVar(&o.Password, "Postgres.password", o.Password, "用于访问Postgres的密码，应与密码配对使用")
+
+	fs.StringVar(&o.Database, "Postgres.database", o.Database, "服务器要使用的数据库名称")
 
 	fs.IntVar(
 		&o.MaxIdleConnections,
-		"mysql.max-idle-connections",
+		"Postgres.max-idle-connections",
 		o.MaxOpenConnections,
-		"允许连接到mysql的最大空闲连接",
+		"允许连接到Postgres的最大空闲连接",
 	)
 
 	fs.IntVar(
 		&o.MaxOpenConnections,
-		"mysql.max-open-connections",
+		"Postgres.max-open-connections",
 		o.MaxOpenConnections,
-		"允许连接到mysql的最大开放连接",
+		"允许连接到Postgres的最大开放连接",
 	)
 
 	fs.DurationVar(
 		&o.MaxConnectionLifeTime,
-		"mysql.max-connection-life-time",
+		"Postgres.max-connection-life-time",
 		o.MaxConnectionLifeTime,
-		"允许连接到mysql的最大连接寿命",
+		"允许连接到Postgres的最大连接寿命",
 	)
 
-	fs.IntVar(&o.LogLevel, "mysql.log-level", o.LogLevel, "指定gorm日志级别")
+	fs.IntVar(&o.LogLevel, "Postgres.log-level", o.LogLevel, "指定gorm日志级别")
 
 	fs.BoolVar(&o.LogEnableColor,
-		"mysql.log-enable-color",
+		"Postgres.log-enable-color",
 		o.LogEnableColor,
 		"是否开启颜色输出，true:是，false:否",
 	)
 }
 
-// NewClient 使用给定的配置创建 MySQL DB。
-func (o *MySQLOptions) NewClient() (*gorm.DB, error) {
-	opts := &mysql.Options{
+// NewClient 使用给定的配置创建 Postgres DB。
+func (o *PostgresOptions) NewClient() (*gorm.DB, error) {
+	opts := &postgres.Options{
 		Host:                  o.Host,
+		Port:                  o.Port,
 		Username:              o.Username,
 		Password:              o.Password,
 		Database:              o.Database,
@@ -97,5 +102,5 @@ func (o *MySQLOptions) NewClient() (*gorm.DB, error) {
 		Logger:                logger.New(o.LogLevel, o.LogEnableColor),
 	}
 
-	return mysql.New(opts)
+	return postgres.New(opts)
 }
