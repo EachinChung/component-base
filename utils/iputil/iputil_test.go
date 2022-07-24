@@ -1,4 +1,4 @@
-package net
+package iputil
 
 import (
 	"net/http"

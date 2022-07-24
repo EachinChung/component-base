@@ -1,4 +1,4 @@
-package id
+package idutil
 
 import (
 	"testing"
@@ -75,6 +75,32 @@ func Test_randString(t *testing.T) {
 			got := randString(tt.args.letters, tt.args.n)
 			t.Log(got)
 			assert.Lenf(t, got, tt.args.n, "randString(%v, %v)", tt.args.letters, tt.args.n)
+		})
+	}
+}
+
+func TestGetInstanceID(t *testing.T) {
+	type args struct {
+		uid    uint64
+		prefix string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "test_get_instance_id",
+			args: args{
+				uid:    1,
+				prefix: "test",
+			},
+			want: "test-z8mv3z4nqw57",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, GetInstanceID(tt.args.uid, tt.args.prefix), "GetInstanceID(%v, %v)", tt.args.uid, tt.args.prefix)
 		})
 	}
 }

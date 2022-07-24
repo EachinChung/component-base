@@ -1,10 +1,12 @@
-package id
+package idutil
 
 import (
 	"crypto/rand"
+	"github.com/eachinchung/component-base/utils/stringutil"
 
-	"github.com/eachinchung/component-base/utils/net"
+	"github.com/eachinchung/component-base/utils/iputil"
 	"github.com/sony/sonyflake"
+	"github.com/speps/go-hashids/v2"
 )
 
 // Alphabet62 字母表
@@ -19,7 +21,7 @@ var sf *sonyflake.Sonyflake
 func init() {
 	var st sonyflake.Settings
 	st.MachineID = func() (uint16, error) {
-		ip := net.GetLocalIP()
+		ip := iputil.GetLocalIP()
 
 		return uint16([]byte(ip)[2])<<8 + uint16([]byte(ip)[3]), nil
 	}
@@ -35,6 +37,26 @@ func GenUint64ID() uint64 {
 	}
 
 	return id
+}
+
+// GetInstanceID returns id format like: test-z8mv3z4nqw57
+func GetInstanceID(uid uint64, prefix string) string {
+	hd := hashids.NewData()
+	hd.Alphabet = Alphabet36
+	hd.MinLength = 12
+	hd.Salt = "x20k5x"
+
+	h, err := hashids.NewWithData(hd)
+	if err != nil {
+		panic(err)
+	}
+
+	i, err := h.Encode([]int{int(uid)})
+	if err != nil {
+		panic(err)
+	}
+
+	return prefix + "-" + stringutil.Reverse(i)
 }
 
 // GenSecretID 返回SecretID。
