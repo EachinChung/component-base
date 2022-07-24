@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/eachinchung/log"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -191,6 +192,11 @@ func (mw *GinJWTMiddleware) GetClaimsFromJWT(c *gin.Context) (MapClaims, error) 
 		claims[key] = value
 	}
 
+	sub, ok := claims["sub"]
+	if ok {
+		c.Set(log.KeyUsername, sub)
+	}
+
 	return claims, nil
 }
 
@@ -373,8 +379,8 @@ func (mw *GinJWTMiddleware) CheckIfTokenExpire(c *gin.Context) (jwt.MapClaims, e
 	return claims, nil
 }
 
-// ExtractClaims help to extract the JWT claims
-func ExtractClaims(c *gin.Context) MapClaims {
+// ExtractClaimsFromContext help to extract the JWT claims
+func ExtractClaimsFromContext(c *gin.Context) MapClaims {
 	claims, exists := c.Get("JWT_PAYLOAD")
 	if !exists {
 		return make(MapClaims)

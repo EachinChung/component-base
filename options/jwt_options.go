@@ -16,8 +16,8 @@ type JWTOptions struct {
 	MaxRefresh time.Duration `json:"max-refresh" mapstructure:"max-refresh"`
 }
 
-// NewJwtOptions 创建一个带有默认参数的 JWTOptions 对象。
-func NewJwtOptions() *JWTOptions {
+// NewJWTOptions 创建一个带有默认参数的 JWTOptions 对象。
+func NewJWTOptions() *JWTOptions {
 	return &JWTOptions{
 		Realm:      "JWT",
 		Key:        "Key",
