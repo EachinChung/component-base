@@ -1,3 +1,17 @@
+## v0.4.0 (2022-07-26)
+
+### Fix
+
+- 去除 WithUnscoped 多余的参数
+
+### Refactor
+
+- **utils**: 包名不再和标准库冲突
+
+### Feat
+
+- **middleware**: JWT 将自动在上下文存储 eid
+
 ## v0.3.0 (2022-07-24)
 
 ### Feat
