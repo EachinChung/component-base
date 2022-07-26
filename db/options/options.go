@@ -21,9 +21,9 @@ type Option struct {
 
 type Opt func(*Option)
 
-func WithUnscoped(unscoped bool) Opt {
+func WithUnscoped() Opt {
 	return func(option *Option) {
-		option.Unscoped = unscoped
+		option.Unscoped = true
 	}
 }
 
