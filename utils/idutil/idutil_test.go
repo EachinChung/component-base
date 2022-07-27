@@ -95,7 +95,15 @@ func TestGetInstanceID(t *testing.T) {
 				uid:    1,
 				prefix: "test",
 			},
-			want: "test-z8mv3z4nqw57",
+			want: "test-3935mq",
+		},
+		{
+			name: "test_get_instance_id_int64",
+			args: args{
+				uid:    9223372036854775807,
+				prefix: "test",
+			},
+			want: "test-dk7kpn8j1ddrnlo",
 		},
 	}
 	for _, tt := range tests {
