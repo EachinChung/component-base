@@ -4,7 +4,7 @@ import "regexp"
 
 // PasswordPower 检查密码强度是否符合要求
 func PasswordPower(pwd string) bool {
-	patternList := []string{`[0-9]+`, `[a-z]+`, `[A-Z]+`, `[\.\+:;~!@#$%^&*?_-]+`}
+	patternList := []string{`[0-9]+`, `[a-z]+`, `[A-Z]+`, `[^a-zA-Z0-9]+`}
 	for _, pattern := range patternList {
 		if rgx := regexp.MustCompile(pattern); !rgx.MatchString(pwd) {
 			return false
