@@ -12,7 +12,7 @@ func TestWriteResponse(t *testing.T) {
 	type args struct {
 		c      *gin.Context
 		err    error
-		detail interface{}
+		detail any
 	}
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 	tests := []struct {
@@ -20,7 +20,7 @@ func TestWriteResponse(t *testing.T) {
 		args args
 	}{
 		{
-			name: "write response",
+			name: "write rConfig",
 			args: args{
 				c:      c,
 				err:    nil,
@@ -28,7 +28,7 @@ func TestWriteResponse(t *testing.T) {
 			},
 		},
 		{
-			name: "write response with error",
+			name: "write rConfig with error",
 			args: args{
 				c:      c,
 				err:    errors.New("test error"),

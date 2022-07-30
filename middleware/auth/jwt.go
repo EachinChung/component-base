@@ -5,14 +5,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eachinchung/log"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+
+	"github.com/eachinchung/errors"
+	"github.com/eachinchung/log"
 )
 
-// MapClaims type that uses the map[string]interface{} for JSON decoding
+// MapClaims type that uses the map[string]any for JSON decoding
 // This is the default claims type if you don't supply one
-type MapClaims map[string]interface{}
+type MapClaims map[string]any
 
 // GinJWTMiddleware provides a Json-Web-Token authentication implementation. On failure, a 401 HTTP response
 // is returned. On success, the wrapped middleware is called, and the userID is made available as
@@ -42,7 +44,7 @@ type GinJWTMiddleware struct {
 	// Callback function that should perform the authentication of the user based on login info.
 	// Must return user data as user identifier, it will be stored in Claim Array. Required.
 	// Check error (e) to determine the appropriate error message.
-	Authenticator func(c *gin.Context) (interface{}, error)
+	Authenticator func(c *gin.Context) (any, error)
 
 	// Callback function that will be called during login.
 	// Using this function it is possible to add additional payload data to the web token.
@@ -50,7 +52,7 @@ type GinJWTMiddleware struct {
 	// Note that the payload is not encrypted.
 	// The attributes mentioned on jwt.io can't be used as keys for the map.
 	// Optional, by default no additional data will be set.
-	PayloadFunc func(data interface{}) MapClaims
+	PayloadFunc func(data any) MapClaims
 
 	// User can define own Unauthorized func.
 	Unauthorized func(c *gin.Context, code int, err error)
@@ -262,16 +264,20 @@ func (mw *GinJWTMiddleware) ParseToken(c *gin.Context) (*jwt.Token, error) {
 		return nil, err
 	}
 
-	return jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+	result, err := jwt.Parse(token, func(t *jwt.Token) (any, error) {
 		if jwt.GetSigningMethod(mw.SigningAlgorithm) != t.Method {
 			return nil, ErrInvalidSigningAlgorithm
 		}
 
-		// save token stringutil if valid
 		c.Set("JWT_TOKEN", token)
-
 		return mw.Key, nil
 	})
+
+	if err != nil && !errors.Is(err, jwt.ErrTokenExpired) {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func (mw *GinJWTMiddleware) unauthorized(c *gin.Context, code int, err error) {

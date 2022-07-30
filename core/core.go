@@ -9,35 +9,35 @@ import (
 	"github.com/eachinchung/log"
 )
 
-type response struct {
+type rConfig struct {
 	httpStatus int
 	message    *string
 	err        error
 	abort      bool
 }
 
-type Option func(*response)
+type Option func(*rConfig)
 
 func WithHttpStatus(httpStatus int) Option {
-	return func(r *response) {
+	return func(r *rConfig) {
 		r.httpStatus = httpStatus
 	}
 }
 
 func WithError(err error) Option {
-	return func(r *response) {
+	return func(r *rConfig) {
 		r.err = err
 	}
 }
 
 func WithAbort() Option {
-	return func(r *response) {
+	return func(r *rConfig) {
 		r.abort = true
 	}
 }
 
 func WithMessage(message string) Option {
-	return func(r *response) {
+	return func(r *rConfig) {
 		r.message = &message
 	}
 }
@@ -52,14 +52,14 @@ type ErrResponse struct {
 	Message string `json:"message"`
 
 	// Detail 返回可能对解决此错误有用的详细信息。
-	Detail interface{} `json:"detail,omitempty"`
+	Detail any `json:"detail,omitempty"`
 }
 
 // WriteResponse 将错误或响应数据写入http响应主体。
 // 它使用 errors.ParseCoder 将任何错误解析为 errors.Coder
 // errors.Coder 包含错误代码、用户安全错误消息和 http 状态代码。
-func WriteResponse(c *gin.Context, detail interface{}, opts ...Option) {
-	r := &response{
+func WriteResponse(c *gin.Context, detail any, opts ...Option) {
+	r := &rConfig{
 		httpStatus: http.StatusOK,
 		abort:      false,
 	}

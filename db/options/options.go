@@ -3,8 +3,8 @@ package options
 import "gorm.io/gorm"
 
 type Where struct {
-	Query interface{}
-	Args  []interface{}
+	Query any
+	Args  []any
 }
 
 type Paginate struct {
@@ -27,20 +27,20 @@ func WithUnscoped() Opt {
 	}
 }
 
-func WithWhere(query interface{}, args ...interface{}) Opt {
+func WithWhere(query any, args ...any) Opt {
 	return func(option *Option) {
 		option.Where.Query = query
 		option.Where.Args = args
 	}
 }
 
-func WithQuery(query interface{}) Opt {
+func WithQuery(query any) Opt {
 	return func(option *Option) {
 		option.Where.Query = query
 	}
 }
 
-func WithArgs(args ...interface{}) Opt {
+func WithArgs(args ...any) Opt {
 	return func(option *Option) {
 		option.Where.Args = args
 	}

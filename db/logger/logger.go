@@ -34,7 +34,7 @@ const (
 
 // Writer log writer interface.
 type Writer interface {
-	Printf(string, ...interface{})
+	Printf(string, ...any)
 }
 
 // Config defines a gorm logger configuration.
@@ -98,23 +98,23 @@ func (l *logger) LogMode(level gormlogger.LogLevel) gormlogger.Interface {
 }
 
 // Info print info.
-func (l logger) Info(ctx context.Context, msg string, data ...interface{}) {
+func (l logger) Info(ctx context.Context, msg string, data ...any) {
 	if l.LogLevel >= Info {
-		l.Printf(l.infoStr+msg, append([]interface{}{fileWithLineNum()}, data...)...)
+		l.Printf(l.infoStr+msg, append([]any{fileWithLineNum()}, data...)...)
 	}
 }
 
 // Warn print warn messages.
-func (l logger) Warn(ctx context.Context, msg string, data ...interface{}) {
+func (l logger) Warn(ctx context.Context, msg string, data ...any) {
 	if l.LogLevel >= Warn {
-		l.Printf(l.warnStr+msg, append([]interface{}{fileWithLineNum()}, data...)...)
+		l.Printf(l.warnStr+msg, append([]any{fileWithLineNum()}, data...)...)
 	}
 }
 
 // Error print error messages.
-func (l logger) Error(ctx context.Context, msg string, data ...interface{}) {
+func (l logger) Error(ctx context.Context, msg string, data ...any) {
 	if l.LogLevel >= Error {
-		l.Printf(l.errStr+msg, append([]interface{}{fileWithLineNum()}, data...)...)
+		l.Printf(l.errStr+msg, append([]any{fileWithLineNum()}, data...)...)
 	}
 }
 

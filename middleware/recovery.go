@@ -76,7 +76,7 @@ func RecoveryWithHandle(handle gin.RecoveryFunc) gin.HandlerFunc {
 	}
 }
 
-func defaultHandle(c *gin.Context, err interface{}) {
+func defaultHandle(c *gin.Context, err any) {
 	c.AbortWithStatus(http.StatusInternalServerError)
 }
 
