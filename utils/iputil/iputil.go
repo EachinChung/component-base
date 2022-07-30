@@ -4,6 +4,8 @@ package iputil
 import (
 	stdnet "net"
 	"net/http"
+
+	"github.com/go-resty/resty/v2"
 )
 
 // http headers.
@@ -47,4 +49,14 @@ func GetRemoteIP(req *http.Request) string {
 	}
 
 	return remoteAddr
+}
+
+// GetLocalExternalIPV4 获取本机外网IP
+func GetLocalExternalIPV4() (string, error) {
+	client := resty.New()
+	resp, err := client.R().Get("https://ipv4.icanhazip.com")
+	if err != nil {
+		return "", err
+	}
+	return resp.String(), nil
 }

@@ -9,6 +9,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/gosuri/uitable v0.0.4
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
