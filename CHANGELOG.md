@@ -1,3 +1,19 @@
+## v0.6.0 (2022-07-30)
+
+### Refactor
+
+- 重构为范型
+
+### Fix
+
+- **utils**: GetInstanceID 前缀为空时, 不再带有 -
+- **middleware**: 去除默认的 AllowOriginFunc
+- **options**: 去除不知所谓的默认值
+
+### Feat
+
+- **utils**: 获取本机外网IP
+
 ## v0.5.0 (2022-07-27)
 
 ### Feat
