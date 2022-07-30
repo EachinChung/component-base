@@ -32,7 +32,6 @@ func NewPostgresOptions() *PostgresOptions {
 		Port:                  5432,
 		Username:              "postgres",
 		Password:              "123456",
-		Database:              "service",
 		MaxIdleConnections:    100,
 		MaxOpenConnections:    100,
 		MaxConnectionLifeTime: time.Minute,
