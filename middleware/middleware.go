@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"regexp"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -19,11 +18,7 @@ func Cors() gin.HandlerFunc {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: false,
 		MaxAge:           maxAge * time.Hour,
-		AllowOriginFunc: func(origin string) bool {
-			reg := `^.*eachin-life\.com$`
-			rgx := regexp.MustCompile(reg)
-			return rgx.MatchString(origin)
-		},
+		AllowOrigins:     []string{"*"},
 	})
 }
 
