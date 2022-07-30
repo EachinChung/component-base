@@ -2,11 +2,13 @@ package idutil
 
 import (
 	"crypto/rand"
-	"github.com/eachinchung/component-base/utils/stringutil"
+	"strings"
 
-	"github.com/eachinchung/component-base/utils/iputil"
 	"github.com/sony/sonyflake"
 	"github.com/speps/go-hashids/v2"
+
+	"github.com/eachinchung/component-base/utils/iputil"
+	"github.com/eachinchung/component-base/utils/stringutil"
 )
 
 // Alphabet62 字母表
@@ -56,7 +58,13 @@ func GetInstanceID(uid uint64, prefix string) string {
 		panic(err)
 	}
 
-	return prefix + "-" + stringutil.Reverse(i)
+	var builder strings.Builder
+	if prefix != "" {
+		builder.WriteString(prefix)
+		builder.WriteString("-")
+	}
+	builder.WriteString(stringutil.Reverse(i))
+	return builder.String()
 }
 
 // GenSecretID 返回SecretID。
